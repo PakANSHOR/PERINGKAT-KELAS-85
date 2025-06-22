@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Pengumuman Ranking Online</title>
+  <style>
+    body { font-family: sans-serif; max-width: 400px; margin: 50px auto; text-align: center; }
+    input { padding: 8px; width: 80%; margin-bottom: 10px; }
+    button { padding: 8px 16px; }
+    .info { text-align: left; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h2>Masukkan Password Anda</h2>
+  <input id="passwordInput" type="password" placeholder="Password siswa">
+  <br>
+  <button onclick="cekPassword()">Lihat Hasil</button>
+  <div id="result"></div>
+
+
+  <script>
+    // Load data siswa dari file JSON
+    let dataSiswa = [];
+    fetch('data_ranking.json')
+      .then(res => res.json())
+      .then(json => dataSiswa = json)
+      .catch(err => document.getElementById('result').innerHTML = 'Gagal memuat data.');
+
+
+    function cekPassword() {
+      const pw = document.getElementById('passwordInput').value.trim();
+      const siswa = dataSiswa.find(s => s.PASSWORD === pw);
+      const out = document.getElementById('result');
+      out.innerHTML = '';
+      if (!siswa) {
+        out.innerHTML = '<p style="color:red;">Password salah atau tidak ditemukan.</p>';
+        return;
+      }
+      out.innerHTML = `
+        <div class="info">
+          <h3>Halo, ${siswa.NAMA}!</h3>
+          <p>📊 Nilai Rata-rata: <strong>${siswa.NILAI}</strong></p>
+          <p>🥇 Peringkat: <strong>${siswa.RANKING}</strong></p>
+          <hr>
+          <p>📝 Catatan dari Wali Kelas:</p>
+          <blockquote>${siswa.CATATAN}</blockquote>
+        </div>`;
+    }
+  </script>
+</body>
+</html>
